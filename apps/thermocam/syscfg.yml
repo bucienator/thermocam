@@ -1,0 +1,45 @@
+syscfg.vals:
+    # Use INFO log level to reduce code size.  DEBUG is too large for nRF51.
+    LOG_LEVEL: 1
+    REBOOT_LOG_CONSOLE: 1
+    
+    # Enable the shell task.
+    SHELL_TASK: 1
+    
+    # Include names for statistics.
+    STATS_NAMES: 1
+    
+    # Enable shell commands.
+    STATS_CLI: 1
+    LOG_CLI: 1
+    CONFIG_CLI: 1
+    
+    # Enable newtmgr commands.
+    STATS_NEWTMGR: 1
+    LOG_NEWTMGR: 1
+    CONFIG_NEWTMGR: 1
+    
+    I2C_0: 1
+
+    # Disable central and observer roles.
+    BLE_ROLE_BROADCASTER: 1
+    BLE_ROLE_CENTRAL: 0
+    BLE_ROLE_OBSERVER: 0
+    BLE_ROLE_PERIPHERAL: 1
+
+    BLE_STORE_CONFIG_PERSIST: 0
+
+    # Log reboot messages to a flash circular buffer.
+    REBOOT_LOG_FCB: 1
+    LOG_FCB: 1
+    CONFIG_FCB: 1
+
+    # OS main/default task
+    OS_MAIN_STACK_SIZE: 468
+
+    # Lots of smaller mbufs are required for newtmgr using typical BLE ATT MTU
+    # values.
+    MSYS_1_BLOCK_COUNT: 22
+    MSYS_1_BLOCK_SIZE: 110
+    
+    BLE_SVC_GAP_DEVICE_NAME: '"thermocam"'
