@@ -8,22 +8,13 @@ uint8_t thermocam_raw_image[128];
 uint32_t thermocam_frame_cnt;
 
 #define CAM_TASK_PRIO        (100)  /* 1 = highest, 255 = lowest */
-#define CAM_STACK_SIZE       OS_STACK_ALIGN(64)
+#define CAM_STACK_SIZE       OS_STACK_ALIGN(1024)
 static struct os_task camera_task;
 static os_stack_t camera_task_stack[CAM_STACK_SIZE];
 
-static void tx_notifications(struct os_event *ev)
-{
-	gatt_svr_notify();
-}
-
-static struct os_event tx_notifications_event = {
-    .ev_cb = tx_notifications,
-};
-
 static void camera_task_func(void *arg)
 {
-    //THERMOCAM_LOG(INFO, "Camera task started\n");
+    THERMOCAM_LOG(INFO, "Camera task started\n");
 
     hal_gpio_init_out(LED_BLINK_PIN, 0);
 	int rc = 0;
@@ -67,8 +58,8 @@ static void camera_task_func(void *arg)
 			continue;
 		}
 
-		// trigger notify on main task
-		os_eventq_put(os_eventq_dflt_get(), &tx_notifications_event);
+		// trigger notify of data change
+		gatt_svr_notify();
 
  		thermocam_frame_cnt++;
         int i;
@@ -82,7 +73,7 @@ static void camera_task_func(void *arg)
 
 void thermocam_camera_init(void)
 {
-	//THERMOCAM_LOG(INFO, "Camera task init\n");
+	THERMOCAM_LOG(INFO, "Camera task init\n");
     os_task_init(&camera_task, "cam", camera_task_func, NULL,
                  CAM_TASK_PRIO, OS_WAIT_FOREVER, camera_task_stack,
                  CAM_STACK_SIZE);
