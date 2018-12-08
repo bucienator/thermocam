@@ -18,6 +18,9 @@ syscfg.vals:
     STATS_NEWTMGR: 1
     LOG_NEWTMGR: 1
     CONFIG_NEWTMGR: 1
+    SHELL_NEWTMGR: 1
+    RUNTEST_NEWTMGR: 1
+    CRASH_TEST_NEWTMGR: 1
     
     I2C_0: 1
 
