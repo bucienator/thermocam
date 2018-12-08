@@ -10,5 +10,5 @@ tags
 .DS_Store
 *.swp
 *.swo
-/repos
-/.vscode
+/firmware/repos
+/firmware/.vscode
