@@ -35,7 +35,7 @@ static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
             .uuid = &gatt_svr_chr_thermo_img_uuid.u,
             .access_cb = gatt_svr_chr_access_thermo_cam,
             .flags = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_NOTIFY,
-			.val_handle = &gatt_svr_chr_thermo_img_handle,
+            .val_handle = &gatt_svr_chr_thermo_img_handle,
         }, {
             0, /* No more characteristics in this service. */
         } },

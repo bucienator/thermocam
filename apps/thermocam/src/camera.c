@@ -17,7 +17,7 @@ static void camera_task_func(void *arg)
     THERMOCAM_LOG(INFO, "Camera task started\n");
 
     hal_gpio_init_out(LED_BLINK_PIN, 0);
-	int rc = 0;
+    int rc = 0;
     
     uint8_t b[2];
     
@@ -28,52 +28,52 @@ static void camera_task_func(void *arg)
     b[0]=2;
     b[1]=0;
     rc = hal_i2c_master_write(0, &pdata, OS_TICKS_PER_SEC, 1);
-	if(rc != 0) {
+    if(rc != 0) {
         hal_gpio_write(LED_BLINK_PIN, 1);
         os_time_delay(OS_TICKS_PER_SEC);
         hal_gpio_write(LED_BLINK_PIN, 0);
-	}
+    }
  
     while (1) {
-		os_time_delay(OS_TICKS_PER_SEC);
-		
-		pdata.len = 1;
-		pdata.buffer = b;
-		b[0] = 0x80;
-		rc = hal_i2c_master_write(0, &pdata, OS_TICKS_PER_SEC, 1);
-		if(rc != 0) {
-			hal_gpio_write(LED_BLINK_PIN, 1);
-			os_time_delay(OS_TICKS_PER_SEC);
-			hal_gpio_write(LED_BLINK_PIN, 0);
-			continue;
-		}
+        os_time_delay(OS_TICKS_PER_SEC);
+        
+        pdata.len = 1;
+        pdata.buffer = b;
+        b[0] = 0x80;
+        rc = hal_i2c_master_write(0, &pdata, OS_TICKS_PER_SEC, 1);
+        if(rc != 0) {
+            hal_gpio_write(LED_BLINK_PIN, 1);
+            os_time_delay(OS_TICKS_PER_SEC);
+            hal_gpio_write(LED_BLINK_PIN, 0);
+            continue;
+        }
         
         pdata.len=128;
-		pdata.buffer=thermocam_raw_image;
-		rc = hal_i2c_master_read(0, &pdata, OS_TICKS_PER_SEC, 1);
-		if(rc != 0) {
-			hal_gpio_write(LED_BLINK_PIN, 1);
-			os_time_delay(OS_TICKS_PER_SEC);
-			hal_gpio_write(LED_BLINK_PIN, 0);
-			continue;
-		}
+        pdata.buffer=thermocam_raw_image;
+        rc = hal_i2c_master_read(0, &pdata, OS_TICKS_PER_SEC, 1);
+        if(rc != 0) {
+            hal_gpio_write(LED_BLINK_PIN, 1);
+            os_time_delay(OS_TICKS_PER_SEC);
+            hal_gpio_write(LED_BLINK_PIN, 0);
+            continue;
+        }
 
-		// trigger notify of data change
-		gatt_svr_notify();
+        // trigger notify of data change
+        gatt_svr_notify();
 
- 		thermocam_frame_cnt++;
+        thermocam_frame_cnt++;
         int i;
-		for(i = 0; i < 64; ++i) {
-			//uint16_t val = ((uint16_t)b[i*2 + 1] << 8) | ((uint16_t)b[i*2]);
-			//uint16_t absVal = (val & 0x7FF);
-			//image[i] =  ((val & 0x800) ? 0 - (float)absVal : (float)absVal) / 4;
-		}
+        for(i = 0; i < 64; ++i) {
+            //uint16_t val = ((uint16_t)b[i*2 + 1] << 8) | ((uint16_t)b[i*2]);
+            //uint16_t absVal = (val & 0x7FF);
+            //image[i] =  ((val & 0x800) ? 0 - (float)absVal : (float)absVal) / 4;
+        }
     }
 }
 
 void thermocam_camera_init(void)
 {
-	THERMOCAM_LOG(INFO, "Camera task init\n");
+    THERMOCAM_LOG(INFO, "Camera task init\n");
     os_task_init(&camera_task, "cam", camera_task_func, NULL,
                  CAM_TASK_PRIO, OS_WAIT_FOREVER, camera_task_stack,
                  CAM_STACK_SIZE);

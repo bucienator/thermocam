@@ -6,14 +6,14 @@
 
 static int query_cam_fn(int argc, char **argv)
 {
-	int i;
+    int i;
     console_printf("framecnt: \n");
-	for(i = 0; i < 64; ++i) {
-		console_printf("%d ", (int)(thermocam_raw_image[i]));
-		if((i+1) % 8 == 0) {
-			console_printf("\n");
-		}
-	}
+    for(i = 0; i < 64; ++i) {
+        console_printf("%d ", (int)(thermocam_raw_image[i]));
+        if((i+1) % 8 == 0) {
+            console_printf("\n");
+        }
+    }
     return 0;
 }
 
@@ -24,6 +24,6 @@ static struct shell_cmd query_cam_cmd = {
 
 void thermocam_shell_init(void)
 {
-	THERMOCAM_LOG(INFO, "Shell command init\n");
+    THERMOCAM_LOG(INFO, "Shell command init\n");
     shell_cmd_register(&query_cam_cmd);
 }

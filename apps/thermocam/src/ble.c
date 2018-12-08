@@ -144,7 +144,7 @@ static int handle_gap_event(struct ble_gap_event *event, void *arg)
         print_conn_desc(&event->disconnect.conn);
         THERMOCAM_LOG(INFO, "\n");
 
-		// make sure the connection is cleared, and we don't send more notifications
+        // make sure the connection is cleared, and we don't send more notifications
         gatt_svr_on_gap_connect(BLE_HS_CONN_HANDLE_NONE);
 
         /* Connection terminated; resume advertising. */
@@ -154,7 +154,7 @@ static int handle_gap_event(struct ble_gap_event *event, void *arg)
     case BLE_GAP_EVENT_CONN_UPDATE:
         /* The central has updated the connection parameters. */
         THERMOCAM_LOG(INFO, "connection updated; status=%d ",
-                    event->conn_update.status);
+                            event->conn_update.status);
         rc = ble_gap_conn_find(event->connect.conn_handle, &desc);
         assert(rc == 0);
         print_conn_desc(&desc);
@@ -163,14 +163,14 @@ static int handle_gap_event(struct ble_gap_event *event, void *arg)
 
     case BLE_GAP_EVENT_ADV_COMPLETE:
         THERMOCAM_LOG(INFO, "advertise complete; reason=%d",
-                    event->adv_complete.reason);
+                            event->adv_complete.reason);
         advertise();
         return 0;
 
     case BLE_GAP_EVENT_ENC_CHANGE:
         /* Encryption has been enabled or disabled for this connection. */
         THERMOCAM_LOG(INFO, "encryption change event; status=%d ",
-                    event->enc_change.status);
+                            event->enc_change.status);
         rc = ble_gap_conn_find(event->connect.conn_handle, &desc);
         assert(rc == 0);
         print_conn_desc(&desc);
@@ -179,7 +179,7 @@ static int handle_gap_event(struct ble_gap_event *event, void *arg)
 
     case BLE_GAP_EVENT_SUBSCRIBE:
         THERMOCAM_LOG(INFO, "subscribe event; conn_handle=%d attr_handle=%d "
-                          "reason=%d prevn=%d curn=%d previ=%d curi=%d\n",
+                            "reason=%d prevn=%d curn=%d previ=%d curi=%d\n",
                     event->subscribe.conn_handle,
                     event->subscribe.attr_handle,
                     event->subscribe.reason,
@@ -248,11 +248,4 @@ void thermocam_ble_init(void)
     ble_hs_cfg.sync_cb = ble_on_sync;
     ble_hs_cfg.gatts_register_cb = gatt_svr_register_cb;
     ble_hs_cfg.store_status_cb = ble_store_util_status_rr;
-
-    //rc = gatt_svr_init();
-    //assert(rc == 0);
-
-    //int rc = ble_svc_gap_device_name_set("thermocam");
-    //assert(rc == 0);
-
 }

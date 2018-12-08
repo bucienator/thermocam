@@ -13,13 +13,13 @@ int main(int argc, char **argv)
     thermocam_shell_init();
  
     sysinit();
-	
+    
     thermocam_ble_init();
     thermocam_camera_init();
     thermocam_gatt_svr_init();
-	
-	//conf_load();
-	
+    
+    //conf_load();
+    
     while (1) {
         /* Run the event queue to process background events */
         os_eventq_run(os_eventq_dflt_get());
