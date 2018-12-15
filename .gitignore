@@ -12,3 +12,11 @@ tags
 *.swo
 /firmware/repos
 /firmware/.vscode
+/viewer/.vs
+/viewer/ARM
+/viewer/Debug
+/viewer/Generated Files
+/viewer/packages
+/viewer/x64
+/viewer/*.pfx
+/viewer/*.user
