@@ -77,10 +77,16 @@ static void advertise(void)
     fields.tx_pwr_lvl_is_present = 1;
     fields.tx_pwr_lvl = BLE_HS_ADV_TX_PWR_LVL_AUTO;
 
-    name = ble_svc_gap_device_name();
+    name = "tc"; //ble_svc_gap_device_name();
     fields.name = (uint8_t *)name;
     fields.name_len = strlen(name);
     fields.name_is_complete = 1;
+
+    fields.uuids128 = (ble_uuid128_t[]){
+        BLE_UUID128_INIT(THERMOCAM_SERVICE_GUID_DATA)
+    };
+    fields.uuids128_is_complete = 1;
+    fields.num_uuids128 = 1;
 
     rc = ble_gap_adv_set_fields(&fields);
     if (rc != 0) {
