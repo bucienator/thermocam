@@ -13,7 +13,7 @@ using namespace Windows::UI::Xaml::Media;
 namespace winrt::viewer::implementation
 {
 
-	MainPage::MainPage() : client{ nullptr }, thermocamChr{ nullptr }, min{ 100 }, max{ -100 }, thermocamBitmap{ 8,8 }
+	MainPage::MainPage() : client{ nullptr }, thermocamChr{ nullptr }, min{ 100 }, max{ -100 }
     {
         InitializeComponent();
 		NotifyUser(L"", NotifyType::StatusMessage);
@@ -29,8 +29,10 @@ namespace winrt::viewer::implementation
 			const uint32_t blue = std::min(i * 4, 255u);
 			const uint32_t red = std::min(i * 2, 255u);
 			const uint32_t green = i;
-			colorScale[i] = (alfa) | (red << 8) | (green << 16) | (blue << 24);
+			colorScale[i] = (alfa << 24) | (red << 16) | (green << 8) | (blue);
 		}
+		thermalImage().Source(thermocamBitmap);
+
     }
 
 	const GUID MainPage::thermocamServiceUUID = { 0x97B8FCA2, 0x45A8, 0x478C, 0x9E, 0x85, 0xCC, 0x85, 0x2A, 0xF2, 0xE9, 0x50 };
@@ -99,21 +101,25 @@ namespace winrt::viewer::implementation
 		log = std::wstring(L"Min: ") + std::to_wstring(*minmax.first) + L"(" + std::to_wstring(min) + L") max: " + std::to_wstring(*minmax.second) + L"(" + std::to_wstring(max) + L")";
 		NotifyUser(log, NotifyType::StatusMessage);
 
-		DataWriter writer;
+		SoftwareBitmap sb(BitmapPixelFormat::Bgra8, 8, 8, BitmapAlphaMode::Premultiplied);
+		{
+			auto buffer = sb.LockBuffer(BitmapBufferAccessMode::Write);
+			auto reference = buffer.CreateReference();
+			auto interop = reference.as<IMemoryBufferByteAccess>();
+			uint8_t * data;
+			uint32_t length;
+			interop->GetBuffer(&data, &length);
+			uint32_t * pixels = reinterpret_cast<uint32_t *>(data);
 
-		for (unsigned i = 0; i < 64; ++i) {
-			const uint8_t pixel = static_cast<uint8_t>((temperatures[i] - min) / (max - min) * 255);
-			writer.WriteUInt32(colorScale[pixel]);
+			for (unsigned i = 0; i < 64; ++i) {
+				const uint8_t pixel = static_cast<uint8_t>((temperatures[i] - min) / (max - min) * 255);
+				pixels[i] = colorScale[pixel];
+			}
 		}
 
-		auto buf = writer.DetachBuffer();
-
-		SoftwareBitmap sb = SoftwareBitmap::CreateCopyFromBuffer(buf, BitmapPixelFormat::Bgra8, 8, 8);
 		Dispatcher().RunAsync(CoreDispatcherPriority::Normal, [sb, this]() {
-			sb.CopyToBuffer(thermocamBitmap.PixelBuffer());
-			thermalImage().Source(thermocamBitmap);
+			thermocamBitmap.SetBitmapAsync(sb);
 		});
-		
 	}
 
 	IAsyncAction MainPage::SubscribeToThermocamImagesAsync(const uint64_t addr)

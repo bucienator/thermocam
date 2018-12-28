@@ -51,7 +51,7 @@ namespace winrt::viewer::implementation
 		std::atomic<uint64_t> clientAddr; // address of the BLE client we are trying to connect to
 		BluetoothLEDevice client;
 		GattCharacteristic thermocamChr;
-		WriteableBitmap thermocamBitmap;
+		SoftwareBitmapSource thermocamBitmap;
 		std::vector<uint32_t> colorScale;
 		float min;
 		float max;
