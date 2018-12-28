@@ -5,6 +5,8 @@
 
 #pragma once
 
+#define NOMINMAX
+
 #include <windows.h>
 #include <unknwn.h>
 #include <restrictederrorinfo.h>
@@ -15,6 +17,7 @@
 #include <winrt/Windows.Devices.Bluetooth.Advertisement.h>
 #include <winrt/Windows.Devices.Bluetooth.GenericAttributeProfile.h>
 #include <winrt/Windows.Devices.Enumeration.h>
+#include <winrt/Windows.Graphics.Imaging.h>
 #include <winrt/Windows.Storage.Streams.h>
 #include "winrt/Windows.UI.h"
 #include "winrt/Windows.UI.Core.h"
@@ -26,6 +29,8 @@
 #include "winrt/Windows.UI.Xaml.Interop.h"
 #include "winrt/Windows.UI.Xaml.Markup.h"
 #include "winrt/Windows.UI.Xaml.Media.h"
+#include "winrt/Windows.UI.Xaml.Media.Imaging.h"
 #include "winrt/Windows.UI.Xaml.Navigation.h"
 
 #include <set>
+#include <algorithm>

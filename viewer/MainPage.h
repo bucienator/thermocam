@@ -13,6 +13,7 @@ using namespace Windows::Devices::Bluetooth::GenericAttributeProfile;
 using namespace Windows::Devices::Enumeration;
 using namespace Windows::Foundation;
 using namespace Windows::Storage::Streams;
+using namespace Windows::UI::Xaml::Media::Imaging;
 
 namespace winrt::viewer::implementation
 {
@@ -50,6 +51,10 @@ namespace winrt::viewer::implementation
 		std::atomic<uint64_t> clientAddr; // address of the BLE client we are trying to connect to
 		BluetoothLEDevice client;
 		GattCharacteristic thermocamChr;
+		WriteableBitmap thermocamBitmap;
+		std::vector<uint32_t> colorScale;
+		float min;
+		float max;
 	};
 }
 

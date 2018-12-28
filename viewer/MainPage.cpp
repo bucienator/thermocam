@@ -2,17 +2,18 @@
 #include "MainPage.h"
 
 using namespace winrt;
+using namespace Windows::Graphics::Imaging;
+using namespace Windows::Storage::Streams;
 using namespace Windows::UI;
 using namespace Windows::UI::Core;
 using namespace Windows::UI::Xaml;
 using namespace Windows::UI::Xaml::Automation::Peers;
 using namespace Windows::UI::Xaml::Media;
-using namespace Windows::Storage::Streams;
 
 namespace winrt::viewer::implementation
 {
 
-	MainPage::MainPage() : client{ nullptr }, thermocamChr{ nullptr }
+	MainPage::MainPage() : client{ nullptr }, thermocamChr{ nullptr }, min{ 100 }, max{ -100 }, thermocamBitmap{ 8,8 }
     {
         InitializeComponent();
 		NotifyUser(L"", NotifyType::StatusMessage);
@@ -20,6 +21,16 @@ namespace winrt::viewer::implementation
 		advWatcher.Received({ this, &MainPage::OnAdvertisementReceived });
 		advWatcher.Stopped({ this, &MainPage::OnAdvertisementStopped });
 		advWatcher.Start();
+
+
+		colorScale.resize(256);
+		for (unsigned i = 0; i < 256; ++i) {
+			const uint32_t alfa = 255;
+			const uint32_t blue = std::min(i * 4, 255u);
+			const uint32_t red = std::min(i * 2, 255u);
+			const uint32_t green = i;
+			colorScale[i] = (alfa) | (red << 8) | (green << 16) | (blue << 24);
+		}
     }
 
 	const GUID MainPage::thermocamServiceUUID = { 0x97B8FCA2, 0x45A8, 0x478C, 0x9E, 0x85, 0xCC, 0x85, 0x2A, 0xF2, 0xE9, 0x50 };
@@ -59,6 +70,50 @@ namespace winrt::viewer::implementation
 		NotifyUser(log, NotifyType::StatusMessage);
 		std::vector<uint8_t> data(128, 0);
 		reader.ReadBytes(data);
+
+		std::vector<float> temperatures(64, 0.0);
+		for (unsigned i = 0; i < 64; ++i) {
+			const uint16_t pixel = data[i * 2] | (data[i * 2 + 1] << 8);
+			const bool sign = pixel & 0x0400;
+			if (!sign) {
+				// positive
+				temperatures[i] = static_cast<float>(pixel & 0x07ff) / 4;
+			}
+			else {
+				temperatures[i] = 0;// static_cast<float>(pixel & 0x07ff) / 4;
+			}
+		}
+
+		const auto minmax = std::minmax_element(temperatures.begin(), temperatures.end());
+
+		if (*minmax.first < min) {
+			min = *minmax.first;
+		}
+		if (*minmax.second > max) {
+			max = *minmax.second;
+		}
+		if (max == min) {
+			max = min + 0.25;
+		}
+
+		log = std::wstring(L"Min: ") + std::to_wstring(*minmax.first) + L"(" + std::to_wstring(min) + L") max: " + std::to_wstring(*minmax.second) + L"(" + std::to_wstring(max) + L")";
+		NotifyUser(log, NotifyType::StatusMessage);
+
+		DataWriter writer;
+
+		for (unsigned i = 0; i < 64; ++i) {
+			const uint8_t pixel = static_cast<uint8_t>((temperatures[i] - min) / (max - min) * 255);
+			writer.WriteUInt32(colorScale[pixel]);
+		}
+
+		auto buf = writer.DetachBuffer();
+
+		SoftwareBitmap sb = SoftwareBitmap::CreateCopyFromBuffer(buf, BitmapPixelFormat::Bgra8, 8, 8);
+		Dispatcher().RunAsync(CoreDispatcherPriority::Normal, [sb, this]() {
+			sb.CopyToBuffer(thermocamBitmap.PixelBuffer());
+			thermalImage().Source(thermocamBitmap);
+		});
+		
 	}
 
 	IAsyncAction MainPage::SubscribeToThermocamImagesAsync(const uint64_t addr)
