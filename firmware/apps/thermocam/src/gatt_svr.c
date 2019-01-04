@@ -7,8 +7,9 @@
 #include "thermocam.h"
 
 /* 97b8fca2-45a8-478c-9e85-cc852af2e950 */
-static const ble_uuid128_t gatt_svr_svc_thermo_cam_uuid =
-        BLE_UUID128_INIT(THERMOCAM_SERVICE_GUID_DATA);
+const ble_uuid128_t gatt_svr_svc_thermo_cam_uuid =
+        BLE_UUID128_INIT(0x50, 0xe9, 0xf2, 0x2a, 0x85, 0xcc, 0x85, 0x9e,
+                         0x8c, 0x47, 0xa8, 0x45, 0xa2, 0xfc, 0xb8, 0x97);
 
 /* 52e66cfc-9dd2-4932-8e81-7eaf2c6e2c53 */
 static const ble_uuid128_t gatt_svr_chr_thermo_img_uuid =
