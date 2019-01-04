@@ -117,6 +117,20 @@ namespace winrt::viewer::implementation
 			}
 		}
 
+		{
+			InMemoryRandomAccessStream stream;
+			BitmapEncoder encoder = BitmapEncoder::CreateAsync(BitmapEncoder::BmpEncoderId(), stream).get();
+			encoder.SetSoftwareBitmap(sb);
+			encoder.BitmapTransform().ScaledWidth(100);
+			encoder.BitmapTransform().ScaledHeight(100);
+			encoder.BitmapTransform().InterpolationMode(BitmapInterpolationMode::NearestNeighbor);
+
+			encoder.FlushAsync().get();
+
+			BitmapDecoder decoder = BitmapDecoder::CreateAsync(stream).get();
+			sb = decoder.GetSoftwareBitmapAsync(BitmapPixelFormat::Bgra8, BitmapAlphaMode::Premultiplied).get();
+		}
+
 		Dispatcher().RunAsync(CoreDispatcherPriority::Normal, [sb, this]() {
 			thermocamBitmap.SetBitmapAsync(sb);
 		});
