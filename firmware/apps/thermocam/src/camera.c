@@ -7,7 +7,7 @@
 uint8_t thermocam_raw_image[128];
 uint32_t thermocam_frame_cnt;
 
-#define CAM_TASK_PRIO        (100)  /* 1 = highest, 255 = lowest */
+#define CAM_TASK_PRIO        (200)  /* 1 = highest, 255 = lowest */
 #define CAM_STACK_SIZE       OS_STACK_ALIGN(1024)
 static struct os_task camera_task;
 static os_stack_t camera_task_stack[CAM_STACK_SIZE];
