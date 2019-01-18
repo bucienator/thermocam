@@ -17,7 +17,8 @@ int main(int argc, char **argv)
     thermocam_ble_init();
     thermocam_camera_init();
     thermocam_gatt_svr_init();
-    
+    thermocam_status_led_init();
+
     //conf_load();
     
     while (1) {

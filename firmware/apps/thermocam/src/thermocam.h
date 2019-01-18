@@ -31,5 +31,9 @@ extern const ble_uuid128_t gatt_svr_svc_thermo_cam_uuid;
 extern uint16_t gatt_svr_chr_thermo_img_handle;
 void gatt_svr_register_cb(struct ble_gatt_register_ctxt *ctxt, void *arg);
 void gatt_svr_on_gap_connect(uint16_t conn_handle);
+bool is_connected();
 void gatt_svr_notify();
 int thermocam_gatt_svr_init(void);
+
+// status_led.c
+void thermocam_status_led_init(void);

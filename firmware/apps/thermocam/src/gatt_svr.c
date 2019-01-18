@@ -117,9 +117,14 @@ void gatt_svr_on_gap_connect(uint16_t conn_handle)
     ble_svc_thermo_cam_conn_handle = conn_handle;
 }
 
+bool is_connected()
+{
+    return ble_svc_thermo_cam_conn_handle != BLE_HS_CONN_HANDLE_NONE;
+}
+
 void gatt_svr_notify()
 {
-    if(ble_svc_thermo_cam_conn_handle != BLE_HS_CONN_HANDLE_NONE) {
+    if(is_connected()) {
         ble_gattc_notify(ble_svc_thermo_cam_conn_handle, gatt_svr_chr_thermo_img_handle);
     }
 }

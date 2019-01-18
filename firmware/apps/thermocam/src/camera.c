@@ -16,7 +16,6 @@ static void camera_task_func(void *arg)
 {
     THERMOCAM_LOG(INFO, "Camera task started\n");
 
-    hal_gpio_init_out(LED_BLINK_PIN, 0);
     int rc = 0;
     
     uint8_t b[2];
@@ -29,22 +28,22 @@ static void camera_task_func(void *arg)
     b[1]=0;
     rc = hal_i2c_master_write(0, &pdata, OS_TICKS_PER_SEC, 1);
     if(rc != 0) {
-        hal_gpio_write(LED_BLINK_PIN, 1);
-        os_time_delay(OS_TICKS_PER_SEC);
-        hal_gpio_write(LED_BLINK_PIN, 0);
+        THERMOCAM_LOG(ERROR, "I2C write error %d\n", rc);
     }
  
     while (1) {
         os_time_delay(OS_TICKS_PER_SEC);
+
+        if(!is_connected()) {
+            continue;
+        }
         
         pdata.len = 1;
         pdata.buffer = b;
         b[0] = 0x80;
         rc = hal_i2c_master_write(0, &pdata, OS_TICKS_PER_SEC, 1);
         if(rc != 0) {
-            hal_gpio_write(LED_BLINK_PIN, 1);
-            os_time_delay(OS_TICKS_PER_SEC);
-            hal_gpio_write(LED_BLINK_PIN, 0);
+            THERMOCAM_LOG(ERROR, "I2C write error %d\n", rc);
             continue;
         }
         
@@ -52,9 +51,7 @@ static void camera_task_func(void *arg)
         pdata.buffer=thermocam_raw_image;
         rc = hal_i2c_master_read(0, &pdata, OS_TICKS_PER_SEC, 1);
         if(rc != 0) {
-            hal_gpio_write(LED_BLINK_PIN, 1);
-            os_time_delay(OS_TICKS_PER_SEC);
-            hal_gpio_write(LED_BLINK_PIN, 0);
+            THERMOCAM_LOG(ERROR, "I2C read error %d\n", rc);
             continue;
         }
 
