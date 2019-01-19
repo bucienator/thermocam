@@ -5,6 +5,8 @@
 
 #include "thermocam.h"
 
+static int number_of_connections = 0;
+
 static int handle_gap_event(struct ble_gap_event *event, void *arg);
 
 /**
@@ -134,6 +136,7 @@ static int handle_gap_event(struct ble_gap_event *event, void *arg)
             rc = ble_gap_conn_find(event->connect.conn_handle, &desc);
             assert(rc == 0);
             print_conn_desc(&desc);
+            number_of_connections++;
         }
         THERMOCAM_LOG(INFO, "\n");
 
@@ -147,9 +150,10 @@ static int handle_gap_event(struct ble_gap_event *event, void *arg)
         THERMOCAM_LOG(INFO, "disconnect; reason=%d ", event->disconnect.reason);
         print_conn_desc(&event->disconnect.conn);
         THERMOCAM_LOG(INFO, "\n");
+        number_of_connections--;
 
         // make sure the connection is cleared, and we don't send more notifications
-        gatt_svr_on_gap_connect(BLE_HS_CONN_HANDLE_NONE);
+        gatt_svr_set_peer_to_notify(BLE_HS_CONN_HANDLE_NONE);
 
         /* Connection terminated; resume advertising. */
         advertise();
@@ -193,7 +197,7 @@ static int handle_gap_event(struct ble_gap_event *event, void *arg)
                     event->subscribe.cur_indicate);
         
         if(event->subscribe.attr_handle == gatt_svr_chr_thermo_img_handle) {
-            gatt_svr_on_gap_connect(event->subscribe.cur_notify ? event->subscribe.conn_handle : BLE_HS_CONN_HANDLE_NONE);
+            gatt_svr_set_peer_to_notify(event->subscribe.cur_notify ? event->subscribe.conn_handle : BLE_HS_CONN_HANDLE_NONE);
         }
 
         return 0;
@@ -224,6 +228,11 @@ static int handle_gap_event(struct ble_gap_event *event, void *arg)
     }
 
     return 0;
+}
+
+bool has_connected_peer()
+{
+    return number_of_connections > 0;
 }
 
 static void ble_on_reset(int reason)

@@ -18,7 +18,7 @@ static const ble_uuid128_t gatt_svr_chr_thermo_img_uuid =
 
 
 uint16_t gatt_svr_chr_thermo_img_handle;
-static uint16_t ble_svc_thermo_cam_conn_handle = BLE_HS_CONN_HANDLE_NONE;
+static uint16_t conn_handle_to_notify = BLE_HS_CONN_HANDLE_NONE;
 
 static int
 gatt_svr_chr_access_thermo_cam(uint16_t conn_handle, uint16_t attr_handle,
@@ -112,20 +112,20 @@ void gatt_svr_register_cb(struct ble_gatt_register_ctxt *ctxt, void *arg)
  * @params conn_handle          The connection handle for the current
  *                                  connection.
  */
-void gatt_svr_on_gap_connect(uint16_t conn_handle)
+void gatt_svr_set_peer_to_notify(uint16_t conn_handle)
 {
-    ble_svc_thermo_cam_conn_handle = conn_handle;
+    conn_handle_to_notify = conn_handle;
 }
 
-bool is_connected()
+bool is_notification_enabled()
 {
-    return ble_svc_thermo_cam_conn_handle != BLE_HS_CONN_HANDLE_NONE;
+    return conn_handle_to_notify != BLE_HS_CONN_HANDLE_NONE;
 }
 
 void gatt_svr_notify()
 {
-    if(is_connected()) {
-        ble_gattc_notify(ble_svc_thermo_cam_conn_handle, gatt_svr_chr_thermo_img_handle);
+    if(is_notification_enabled()) {
+        ble_gattc_notify(conn_handle_to_notify, gatt_svr_chr_thermo_img_handle);
     }
 }
 

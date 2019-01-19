@@ -34,7 +34,7 @@ static void camera_task_func(void *arg)
     while (1) {
         os_time_delay(OS_TICKS_PER_SEC);
 
-        if(!is_connected()) {
+        if(!is_notification_enabled()) {
             continue;
         }
         

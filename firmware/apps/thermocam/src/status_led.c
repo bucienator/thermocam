@@ -17,8 +17,8 @@ static os_stack_t status_led_stack[STATUS_LED_STACK_SIZE];
 // When device is powered on, blink 1x100ms each 5 sec.
 // When bluetooth connection is live, blinke 1s on/ 1s off.
 // When BLE notify is enabled, led on constantly.
-uint32_t led_on_time[] = {100, 1000, 1000};
-uint32_t led_off_time[] = {4900, 1000, 0};
+uint32_t led_on_time[] = {100, 500, 1000};
+uint32_t led_off_time[] = {4900, 500, 0};
 
 static void status_led_task_func(void *arg)
 {
@@ -38,8 +38,11 @@ static void status_led_task_func(void *arg)
 
         // check status
         unsigned s = STATUS_POWERED;
-        if(is_connected()) {
+        if(has_connected_peer()) {
             s = STATUS_CONNECTED;
+        }
+        if(is_notification_enabled()) {
+            s = STATUS_NOTIFY;
         }
 
         int current_led_state = hal_gpio_read(LED_1);
