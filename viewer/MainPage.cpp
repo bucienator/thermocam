@@ -13,14 +13,13 @@ using namespace Windows::UI::Xaml::Media;
 namespace winrt::viewer::implementation
 {
 
-	MainPage::MainPage() : client{ nullptr }, thermocamChr{ nullptr }, min{ 100 }, max{ -100 }
+	MainPage::MainPage() : client{ nullptr }, thermocamChr{ nullptr }, min{ 100 }, max{ -100 }, seekConnection(false)
     {
         InitializeComponent();
 		NotifyUser(L"", NotifyType::StatusMessage);
 		clientAddr = 0;
 		advWatcher.Received({ this, &MainPage::OnAdvertisementReceived });
 		advWatcher.Stopped({ this, &MainPage::OnAdvertisementStopped });
-		advWatcher.Start();
 
 
 		colorScale.resize(256);
@@ -49,6 +48,8 @@ namespace winrt::viewer::implementation
 			break;
 		case BluetoothConnectionStatus::Disconnected:
 			NotifyUser(L"Client disconnected.", NotifyType::ErrorMessage);
+			DisconnectBLE();
+			StartAdvWatcherIfNeeded();
 			break;
 		}
 	}
@@ -136,51 +137,102 @@ namespace winrt::viewer::implementation
 		});
 	}
 
+	void MainPage::DisconnectBLE()
+	{
+		if (thermocamChr) {
+			if (tokenForCharacteristicValueChanged) {
+				thermocamChr.ValueChanged(tokenForCharacteristicValueChanged);
+			}
+			thermocamChr = nullptr;
+		}
+		if (client) {
+			client.ConnectionStatusChanged(tokenForConnectionStatusChanged);
+			client.GattServicesChanged(tokenForGattServicesChanged);
+			client.NameChanged(tokenForNameChanged);
+			client = nullptr;
+		}
+		clientAddr.exchange(0);
+	}
+	void MainPage::StopAdvWatcher()
+	{
+		advWatcher.Stop();
+		seekConnection = false;
+	}
+	void MainPage::StartAdvWatcher()
+	{
+		if (clientAddr == 0) {
+			// only start the asvertisement watcher, if we don't have a live connection
+			advWatcher.Start();
+		}
+		seekConnection = true;
+	}
+	void MainPage::StartAdvWatcherIfNeeded()
+	{
+		if (seekConnection) {
+			StartAdvWatcher();
+		}
+	}
+
 	IAsyncAction MainPage::SubscribeToThermocamImagesAsync(const uint64_t addr)
 	{
 		client = co_await BluetoothLEDevice::FromBluetoothAddressAsync(addr);
-		client.ConnectionStatusChanged({ this, &MainPage::OnBLEConnectionStatusChanged });
-		client.GattServicesChanged({ this, &MainPage::OnBLEGattServicesChanged });
-		client.NameChanged({ this, &MainPage::OnBLENameChanged });
+		tokenForConnectionStatusChanged = client.ConnectionStatusChanged({ this, &MainPage::OnBLEConnectionStatusChanged });
+		tokenForGattServicesChanged = client.GattServicesChanged({ this, &MainPage::OnBLEGattServicesChanged });
+		tokenForNameChanged = client.NameChanged({ this, &MainPage::OnBLENameChanged });
 		
 		auto tcServicesResult = co_await client.GetGattServicesForUuidAsync(thermocamServiceUUID, BluetoothCacheMode::Uncached);
 		if (tcServicesResult.Status() != GattCommunicationStatus::Success) {
 			// failed to query services
+			DisconnectBLE();
+			// TODO: add addr to blacklist
+			StartAdvWatcherIfNeeded();
 			co_return;
 		}
 		auto thermocamServices = tcServicesResult.Services();
 		if(thermocamServices.Size() == 0) {
-			// some error, reset connection
+			// failed to query services
+			DisconnectBLE();
+			// TODO: add addr to blacklist
+			StartAdvWatcherIfNeeded();
 			co_return;
 		}
 		if (thermocamServices.Size() > 1) {
-			// more then one service? That is weird
+			// more than one service? That is weird
 			NotifyUser(L"More than one service returned for thermocam uuid.", NotifyType::ErrorMessage);
 		}
 
 		GattDeviceService thermoceSvc = thermocamServices.GetAt(0);
 		auto tcCharacteristicsResult = co_await thermoceSvc.GetCharacteristicsForUuidAsync(thermocamCharacteristiccUUID, BluetoothCacheMode::Uncached);
 		if (tcCharacteristicsResult.Status() != GattCommunicationStatus::Success) {
-			// some error
+			// failed to read characteristics for service
+			DisconnectBLE();
+			// TODO: add addr to blacklist
+			StartAdvWatcherIfNeeded();
 			co_return;
 		}
 
 		auto thermocamCharacteristics = tcCharacteristicsResult.Characteristics();
 		if (thermocamCharacteristics.Size() == 0) {
-			// some error, reset connection
+			// failed to read characteristics for service
+			DisconnectBLE();
+			// TODO: add addr to blacklist
+			StartAdvWatcherIfNeeded();
 			co_return;
 		}
 		if (thermocamCharacteristics.Size() > 1) {
-			// more then one service? That is weird
+			// more than one characteristic? That is weird
 			NotifyUser(L"More than one characteristics returned for thermocam uuid.", NotifyType::ErrorMessage);
 		}
 
 		thermocamChr = thermocamCharacteristics.GetAt(0);
 
-		thermocamChr.ValueChanged({ this, &MainPage::OnThermoImageUpdate });
+		tokenForCharacteristicValueChanged = thermocamChr.ValueChanged({ this, &MainPage::OnThermoImageUpdate });
 		GattCommunicationStatus status = co_await thermocamChr.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue::Notify);
 		if (status != GattCommunicationStatus::Success) {
-			// some error, drop connection
+			// failed to subscribe to notifications
+			DisconnectBLE();
+			// TODO: add addr to blacklist
+			StartAdvWatcherIfNeeded();
 			co_return;
 		}
 
@@ -188,8 +240,6 @@ namespace winrt::viewer::implementation
 
 	void MainPage::OnAdvertisementReceived(BluetoothLEAdvertisementWatcher watcher, BluetoothLEAdvertisementReceivedEventArgs eventArgs)
 	{
-		
-		
 		auto uuids = eventArgs.Advertisement().ServiceUuids();
 		for (auto uuid : uuids) {
 			if (uuid == thermocamServiceUUID) {

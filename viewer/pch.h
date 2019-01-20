@@ -11,8 +11,9 @@
 #include <unknwn.h>
 #include <restrictederrorinfo.h>
 #include <hstring.h>
-#include "winrt/Windows.Foundation.h"
-#include "winrt/Windows.ApplicationModel.Activation.h"
+#include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.ApplicationModel.h>
+#include <winrt/Windows.ApplicationModel.Activation.h>
 #include <winrt/Windows.Devices.Bluetooth.h>
 #include <winrt/Windows.Devices.Bluetooth.Advertisement.h>
 #include <winrt/Windows.Devices.Bluetooth.GenericAttributeProfile.h>

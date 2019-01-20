@@ -39,11 +39,17 @@ namespace winrt::viewer::implementation
 		void OnBLENameChanged(BluetoothLEDevice device, IInspectable object);
 		void OnThermoImageUpdate(GattCharacteristic chr, GattValueChangedEventArgs eventArgs);
 
+		void DisconnectBLE();
+		void StopAdvWatcher();
+		void StartAdvWatcher();
+		void StartAdvWatcherIfNeeded();
+
 	private:
 		void UpdateStatus(const std::wstring & strMessage, NotifyType type);
 		IAsyncAction SubscribeToThermocamImagesAsync(const uint64_t addr);
 		IAsyncAction UpdateThermoImageAsync(IBuffer chr);
 
+		bool seekConnection;
 		BluetoothLEAdvertisementWatcher advWatcher;
 
 		static const GUID thermocamServiceUUID;
@@ -52,6 +58,12 @@ namespace winrt::viewer::implementation
 		BluetoothLEDevice client;
 		GattCharacteristic thermocamChr;
 		SoftwareBitmapSource thermocamBitmap;
+
+		event_token tokenForConnectionStatusChanged;
+		event_token tokenForGattServicesChanged;
+		event_token tokenForNameChanged;
+		event_token tokenForCharacteristicValueChanged;
+
 		std::vector<uint32_t> colorScale;
 		float min;
 		float max;

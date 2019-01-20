@@ -8,7 +8,8 @@ namespace winrt::viewer::implementation
         App();
 
         void OnLaunched(Windows::ApplicationModel::Activation::LaunchActivatedEventArgs const&);
-        void OnSuspending(IInspectable const&, Windows::ApplicationModel::SuspendingEventArgs const&);
+        void OnEnteredBackground(IInspectable const&, Windows::ApplicationModel::EnteredBackgroundEventArgs const&);
+		void OnLeavingBackground(IInspectable const&, Windows::ApplicationModel::LeavingBackgroundEventArgs const&);
         void OnNavigationFailed(IInspectable const&, Windows::UI::Xaml::Navigation::NavigationFailedEventArgs const&);
     };
 }
