@@ -13,7 +13,55 @@ using namespace Windows::UI::Xaml::Media;
 namespace winrt::viewer::implementation
 {
 
-	MainPage::MainPage() : client{ nullptr }, thermocamChr{ nullptr }, min{ 100 }, max{ -100 }, seekConnection(false)
+	std::vector<uint32_t> GenerateIronScale()
+	{
+		std::vector<uint32_t> colorScale;
+		colorScale.resize(256);
+		/*
+			0		0.0  -> (0, 0, 128)    (dark blue)
+			64		0.25 -> (0, 255, 0)    (green)
+			128		0.5  -> (255, 255, 0)  (yellow)
+			192		0.75 -> (255, 128, 0)  (orange)
+			255		1.0  -> (255, 0, 0)    (red)
+		*/
+		const uint32_t alfa = 255;
+		for (unsigned i = 0; i < 64; ++i) {
+			const float a = 1 - i / 64.0;
+			const float b = i / 64.0;
+			const uint32_t red = 0;
+			const uint32_t green = 255 * b;
+			const uint32_t blue = 128 * a;
+			colorScale[i] = (alfa << 24) | (red << 16) | (green << 8) | (blue);
+		}
+		for (unsigned i = 64; i < 128; ++i) {
+			const float a = 1 - (i - 64) / 64.0;
+			const float b = (i - 64) / 64.0;
+			const uint32_t red = 255 * b;
+			const uint32_t green = 255;
+			const uint32_t blue = 0;
+			colorScale[i] = (alfa << 24) | (red << 16) | (green << 8) | (blue);
+		}
+		for (unsigned i = 128; i < 192; ++i) {
+			const float a = 1 - (i - 128) / 64.0;
+			const float b = (i - 128) / 64.0;
+			const uint32_t red = 255;
+			const uint32_t green = 255 * a + 128 * b;
+			const uint32_t blue = 0;
+			colorScale[i] = (alfa << 24) | (red << 16) | (green << 8) | (blue);
+		}
+		for (unsigned i = 192; i < 256; ++i) {
+			const float a = 1 - (i - 192) / 64.0;
+			const float b = (i - 192) / 64.0;
+			const uint32_t red = 255;
+			const uint32_t green = 128 * a;
+			const uint32_t blue = 0;
+			colorScale[i] = (alfa << 24) | (red << 16) | (green << 8) | (blue);
+		}
+
+		return colorScale;
+	}
+
+	MainPage::MainPage() : client{ nullptr }, thermocamChr{ nullptr }, min{ 20 }, max{ 30 }, seekConnection(false)
     {
         InitializeComponent();
 		NotifyUser(L"", NotifyType::StatusMessage);
@@ -21,17 +69,9 @@ namespace winrt::viewer::implementation
 		advWatcher.Received({ this, &MainPage::OnAdvertisementReceived });
 		advWatcher.Stopped({ this, &MainPage::OnAdvertisementStopped });
 
-
-		colorScale.resize(256);
-		for (unsigned i = 0; i < 256; ++i) {
-			const uint32_t alfa = 255;
-			const uint32_t blue = std::min(i * 4, 255u);
-			const uint32_t red = std::min(i * 2, 255u);
-			const uint32_t green = i;
-			colorScale[i] = (alfa << 24) | (red << 16) | (green << 8) | (blue);
-		}
 		thermalImage().Source(thermocamBitmap);
 
+		colorScale = GenerateIronScale();
     }
 
 	const GUID MainPage::thermocamServiceUUID = { 0x97B8FCA2, 0x45A8, 0x478C, 0x9E, 0x85, 0xCC, 0x85, 0x2A, 0xF2, 0xE9, 0x50 };
