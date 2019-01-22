@@ -15,6 +15,7 @@ tags
 /viewer/.vs
 /viewer/ARM
 /viewer/Debug
+/viewer/Release
 /viewer/Generated Files
 /viewer/packages
 /viewer/x64

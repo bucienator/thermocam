@@ -104,6 +104,22 @@ namespace winrt::viewer::implementation
 		NotifyUser(L"BLE Name changed.", NotifyType::ErrorMessage);
 	}
 
+	static float cached_sinc(const float x)
+	{
+		static std::map<float, float> sinc_values;
+		const float scaled_x = x * M_PI;
+		const auto it = sinc_values.find(scaled_x);
+		if (it != sinc_values.end()) {
+			return it->second;
+		}
+
+		const float result = scaled_x == 0 ? 1 : sin(scaled_x) / scaled_x;
+
+		sinc_values[scaled_x] = result;
+
+		return result;
+	}
+
 	void MainPage::OnThermoImageUpdate(GattCharacteristic chr, GattValueChangedEventArgs eventArgs)
 	{
 		static int cnt = 0;
@@ -114,7 +130,7 @@ namespace winrt::viewer::implementation
 		std::vector<uint8_t> data(128, 0);
 		reader.ReadBytes(data);
 
-		std::vector<float> temperatures(64, 0.0);
+		std::vector<float> temperatures(64, 0.0f);
 		for (unsigned i = 0; i < 64; ++i) {
 			const uint16_t pixel = data[i * 2] | (data[i * 2 + 1] << 8);
 			const bool sign = pixel & 0x0400;
@@ -126,6 +142,49 @@ namespace winrt::viewer::implementation
 				temperatures[i] = 0;// static_cast<float>(pixel & 0x07ff) / 4;
 			}
 		}
+
+		// calculate float coordinates of this pixel in the original image's scale.
+		// Original image covers (-0.5 .. 7.5, with a sample point at each integer)
+		// Target image should cover the same area, with evenly placed sample points
+		const int scaled_size = 100; // meaning the image is scaled from 8x8 to 100x100
+		const float scaled_pixel_size = 8.0f / scaled_size;
+		const float scaled_range_start = -0.5f + scaled_pixel_size / 2.0f;
+
+		std::vector<float> scaledTemperatures(scaled_size * scaled_size, 0.0f);
+
+		for (unsigned row = 0; row < scaled_size; ++row) {
+			const float f_row = scaled_range_start + row * scaled_pixel_size;
+			for (unsigned col = 0; col < scaled_size; ++col) {
+				const float f_col = scaled_range_start + col * scaled_pixel_size;
+
+				float accumulator = 0;
+				float weight = 0;
+
+				const int first_effective_row = static_cast<int>(floor(f_row)) - 2;
+				const int last_effective_row = static_cast<int>(ceil(f_row)) + 2;
+				const int first_effective_col = static_cast<int>(floor(f_col)) - 2;
+				const int last_effective_col = static_cast<int>(ceil(f_col)) + 2;
+
+				for (int source_row = first_effective_row; source_row <= last_effective_row; ++source_row) {
+					const int effective_source_row = source_row < 0 ? 0 : (source_row > 7 ? 7 : source_row);
+					for (int source_col = first_effective_col; source_col <= last_effective_col; ++source_col) {
+						const int effective_source_col = source_col < 0 ? 0 : (source_col > 7 ? 7 : source_col);
+
+						const float source_value = temperatures[effective_source_row * 8 + effective_source_col];
+						const float source_weight = cached_sinc(source_row - f_row) * cached_sinc(source_col - f_col);
+
+						accumulator += source_value * source_weight;
+						weight += source_weight;
+					}
+				}
+
+				const float target_value = accumulator / weight;
+
+				scaledTemperatures[row * scaled_size + col] = target_value;
+			}
+		}
+
+		temperatures = scaledTemperatures;
 
 		const auto minmax = std::minmax_element(temperatures.begin(), temperatures.end());
 
@@ -142,7 +201,7 @@ namespace winrt::viewer::implementation
 		log = std::wstring(L"Min: ") + std::to_wstring(*minmax.first) + L"(" + std::to_wstring(min) + L") max: " + std::to_wstring(*minmax.second) + L"(" + std::to_wstring(max) + L")";
 		NotifyUser(log, NotifyType::StatusMessage);
 
-		SoftwareBitmap sb(BitmapPixelFormat::Bgra8, 8, 8, BitmapAlphaMode::Premultiplied);
+		SoftwareBitmap sb(BitmapPixelFormat::Bgra8, scaled_size, scaled_size, BitmapAlphaMode::Premultiplied);
 		{
 			auto buffer = sb.LockBuffer(BitmapBufferAccessMode::Write);
 			auto reference = buffer.CreateReference();
@@ -152,13 +211,13 @@ namespace winrt::viewer::implementation
 			interop->GetBuffer(&data, &length);
 			uint32_t * pixels = reinterpret_cast<uint32_t *>(data);
 
-			for (unsigned i = 0; i < 64; ++i) {
+			for (unsigned i = 0; i < scaled_size * scaled_size; ++i) {
 				const uint8_t pixel = static_cast<uint8_t>((temperatures[i] - min) / (max - min) * 255);
 				pixels[i] = colorScale[pixel];
 			}
 		}
 
-		{
+		if(0){
 			InMemoryRandomAccessStream stream;
 			BitmapEncoder encoder = BitmapEncoder::CreateAsync(BitmapEncoder::BmpEncoderId(), stream).get();
 			encoder.SetSoftwareBitmap(sb);
