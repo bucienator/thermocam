@@ -104,20 +104,31 @@ namespace winrt::viewer::implementation
 		NotifyUser(L"BLE Name changed.", NotifyType::ErrorMessage);
 	}
 
-	static float cached_sinc(const float x)
+	static float sinc(const float x)
 	{
-		static std::map<float, float> sinc_values;
-		const float scaled_x = x * M_PI;
-		const auto it = sinc_values.find(scaled_x);
-		if (it != sinc_values.end()) {
-			return it->second;
+		return x == 0 ? 1 : (sin(x) / x);
+	}
+
+	static float normalized_sinc(const float x)
+	{
+		return sinc(x * M_PI);
+	}
+
+	static float lanczos_weight(const float x)
+	{
+		static const int window_size = 3;
+		return std::abs(x) >= window_size ? 0 : (normalized_sinc(x) * normalized_sinc(x / window_size));
+	}
+
+	static float cached_lanczos_weight(const float x, const float y)
+	{
+		static std::map<std::pair<float, float>, float> cached_values;
+		const auto ret = cached_values.insert(std::make_pair(std::make_pair(x, y), 0.0f));
+		if (ret.second) {
+			ret.first->second = lanczos_weight(x) * lanczos_weight(y);
 		}
 
-		const float result = scaled_x == 0 ? 1 : sin(scaled_x) / scaled_x;
-
-		sinc_values[scaled_x] = result;
-
-		return result;
+		return ret.first->second;
 	}
 
 	void MainPage::OnThermoImageUpdate(GattCharacteristic chr, GattValueChangedEventArgs eventArgs)
@@ -125,8 +136,6 @@ namespace winrt::viewer::implementation
 		static int cnt = 0;
 
 		DataReader reader = DataReader::FromBuffer(eventArgs.CharacteristicValue());
-		std::wstring log = std::wstring(L"Received data update ") + std::to_wstring(cnt++) + L", data size: " + std::to_wstring(reader.UnconsumedBufferLength());
-		NotifyUser(log, NotifyType::StatusMessage);
 		std::vector<uint8_t> data(128, 0);
 		reader.ReadBytes(data);
 
@@ -171,7 +180,9 @@ namespace winrt::viewer::implementation
 						const int effective_source_col = source_col < 0 ? 0 : (source_col > 7 ? 7 : source_col);
 
 						const float source_value = temperatures[effective_source_row * 8 + effective_source_col];
-						const float source_weight = cached_sinc(source_row - f_row) * cached_sinc(source_col - f_col);
+						const float d_row = f_row - source_row;
+						const float d_col = f_col - source_col;
+						const float source_weight = cached_lanczos_weight(d_row, d_col);
 
 						accumulator += source_value * source_weight;
 						weight += source_weight;
@@ -198,7 +209,7 @@ namespace winrt::viewer::implementation
 			max = min + 0.25;
 		}
 
-		log = std::wstring(L"Min: ") + std::to_wstring(*minmax.first) + L"(" + std::to_wstring(min) + L") max: " + std::to_wstring(*minmax.second) + L"(" + std::to_wstring(max) + L")";
+		std::wstring log = std::wstring(L"Min: ") + std::to_wstring(*minmax.first) + L"(" + std::to_wstring(min) + L") max: " + std::to_wstring(*minmax.second) + L"(" + std::to_wstring(max) + L")";
 		NotifyUser(log, NotifyType::StatusMessage);
 
 		SoftwareBitmap sb(BitmapPixelFormat::Bgra8, scaled_size, scaled_size, BitmapAlphaMode::Premultiplied);
