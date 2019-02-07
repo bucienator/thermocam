@@ -21,6 +21,7 @@
 #include <winrt/Windows.Graphics.Imaging.h>
 #include <winrt/Windows.Storage.Streams.h>
 #include <winrt/Windows.System.Display.h>
+#include <winrt/Windows.System.Threading.h>
 #include "winrt/Windows.UI.h"
 #include "winrt/Windows.UI.Core.h"
 #include "winrt/Windows.UI.Xaml.h"

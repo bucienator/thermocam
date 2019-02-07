@@ -14,6 +14,7 @@ using namespace Windows::Devices::Enumeration;
 using namespace Windows::Foundation;
 using namespace Windows::Storage::Streams;
 using namespace Windows::System::Display;
+using namespace Windows::System::Threading;
 using namespace Windows::UI::Xaml::Media::Imaging;
 
 namespace winrt::viewer::implementation
@@ -38,7 +39,8 @@ namespace winrt::viewer::implementation
 		void OnBLEConnectionStatusChanged(BluetoothLEDevice device, IInspectable object);
 		void OnBLEGattServicesChanged(BluetoothLEDevice device, IInspectable object);
 		void OnBLENameChanged(BluetoothLEDevice device, IInspectable object);
-		void OnThermoImageUpdate(GattCharacteristic chr, GattValueChangedEventArgs eventArgs);
+		void OnThermocamImageUpdate(GattCharacteristic chr, GattValueChangedEventArgs eventArgs);
+		void OnGrabImageTime(ThreadPoolTimer timer);
 
 		void DisconnectBLE();
 		void StopAdvWatcher();
@@ -48,7 +50,7 @@ namespace winrt::viewer::implementation
 	private:
 		void UpdateStatus(const std::wstring & strMessage, NotifyType type);
 		IAsyncAction SubscribeToThermocamImagesAsync(const uint64_t addr);
-		IAsyncAction UpdateThermoImageAsync(IBuffer chr);
+		void ProcessThermocamImageData(IBuffer data);
 
 		bool seekConnection;
 		BluetoothLEAdvertisementWatcher advWatcher;
@@ -59,6 +61,9 @@ namespace winrt::viewer::implementation
 		BluetoothLEDevice client;
 		GattCharacteristic thermocamChr;
 		SoftwareBitmapSource thermocamBitmap;
+
+		ThreadPoolTimer imageGrabberTimestamp;
+		std::mutex grabberLock;
 
 		DisplayRequest displayRequest;
 		std::atomic<uint32_t> requestCount;

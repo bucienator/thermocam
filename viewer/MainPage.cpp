@@ -62,7 +62,8 @@ namespace winrt::viewer::implementation
 		return colorScale;
 	}
 
-	MainPage::MainPage() : client{ nullptr }, thermocamChr{ nullptr }, min{ 20 }, max{ 30 }, seekConnection(false)
+	MainPage::MainPage() : client{ nullptr }, thermocamChr{ nullptr }, min{ 20 }, max{ 30 }, seekConnection(false),
+		imageGrabberTimestamp { nullptr }
     {
         InitializeComponent();
 		NotifyUser(L"", NotifyType::StatusMessage);
@@ -73,6 +74,8 @@ namespace winrt::viewer::implementation
 		thermalImage().Source(thermocamBitmap);
 
 		colorScale = GenerateIronScale();
+
+		imageGrabberTimestamp = ThreadPoolTimer::CreatePeriodicTimer({ this, &MainPage::OnGrabImageTime }, std::chrono::milliseconds(100));
     }
 
 	const GUID MainPage::thermocamServiceUUID = { 0x97B8FCA2, 0x45A8, 0x478C, 0x9E, 0x85, 0xCC, 0x85, 0x2A, 0xF2, 0xE9, 0x50 };
@@ -105,11 +108,41 @@ namespace winrt::viewer::implementation
 		NotifyUser(L"BLE Name changed.", NotifyType::ErrorMessage);
 	}
 
-	void MainPage::OnThermoImageUpdate(GattCharacteristic chr, GattValueChangedEventArgs eventArgs)
+	void MainPage::OnGrabImageTime(ThreadPoolTimer timer)
+	{
+		// it is possible, that one execution of this callback
+		// is not yet complete, while the next period is already over,
+		// and the function is invoked again. Ensure that actuayl image
+		// grabbing happens only on one thread.
+
+		std::unique_lock lock_guard(grabberLock, std::defer_lock);
+
+		if (!lock_guard.try_lock()) {
+			return; // if failed to get the lock, do nothing else
+		}
+
+		if (!thermocamChr) {
+			return; // if the characteristic is unknown, image cannot be graddeb
+		}
+
+		GattReadResult result = thermocamChr.ReadValueAsync(BluetoothCacheMode::Uncached).get();
+		if (result.Status() != GattCommunicationStatus::Success) {
+			NotifyUser(L"Failed to read image.", NotifyType::ErrorMessage);
+			return;
+		}
+		ProcessThermocamImageData(result.Value());
+	}
+
+	void MainPage::OnThermocamImageUpdate(GattCharacteristic chr, GattValueChangedEventArgs eventArgs)
+	{
+		ProcessThermocamImageData(eventArgs.CharacteristicValue());
+	}
+
+	void MainPage::ProcessThermocamImageData(IBuffer buffer)
 	{
 		static int cnt = 0;
 
-		DataReader reader = DataReader::FromBuffer(eventArgs.CharacteristicValue());
+		DataReader reader = DataReader::FromBuffer(buffer);
 		std::vector<uint8_t> data(128, 0);
 		reader.ReadBytes(data);
 
@@ -142,7 +175,7 @@ namespace winrt::viewer::implementation
 			max = min + 0.25;
 		}
 
-		std::wstring log = std::wstring(L"Min: ") + std::to_wstring(*minmax.first) + L"(" + std::to_wstring(min) + L") max: " + std::to_wstring(*minmax.second) + L"(" + std::to_wstring(max) + L")";
+		std::wstring log = std::wstring(L"Min: ") + std::to_wstring(*minmax.first) + L"(" + std::to_wstring(min) + L") max: " + std::to_wstring(*minmax.second) + L"(" + std::to_wstring(max) + L") cnt: " + std::to_wstring(cnt++);
 		NotifyUser(log, NotifyType::StatusMessage);
 
 		SoftwareBitmap sb(BitmapPixelFormat::Bgra8, scaled_size, scaled_size, BitmapAlphaMode::Premultiplied);
@@ -260,7 +293,8 @@ namespace winrt::viewer::implementation
 
 		thermocamChr = thermocamCharacteristics.GetAt(0);
 
-		tokenForCharacteristicValueChanged = thermocamChr.ValueChanged({ this, &MainPage::OnThermoImageUpdate });
+		/*
+		tokenForCharacteristicValueChanged = thermocamChr.ValueChanged({ this, &MainPage::OnThermocamImageUpdate });
 		GattCommunicationStatus status = co_await thermocamChr.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue::Notify);
 		if (status != GattCommunicationStatus::Success) {
 			// failed to subscribe to notifications
@@ -269,6 +303,7 @@ namespace winrt::viewer::implementation
 			StartAdvWatcherIfNeeded();
 			co_return;
 		}
+		*/
 
 		uint32_t expected = 0;
 		if (requestCount.compare_exchange_strong(expected, 1)) {
