@@ -122,7 +122,8 @@ namespace winrt::viewer::implementation
 				temperatures[i] = static_cast<float>(pixel & 0x07ff) / 4;
 			}
 			else {
-				temperatures[i] = 0;// static_cast<float>(pixel & 0x07ff) / 4;
+				// negative
+				temperatures[i] = -static_cast<float>(((~pixel) & 0x07ff) + 1) / 4;
 			}
 		}
 
