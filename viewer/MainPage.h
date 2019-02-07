@@ -13,6 +13,7 @@ using namespace Windows::Devices::Bluetooth::GenericAttributeProfile;
 using namespace Windows::Devices::Enumeration;
 using namespace Windows::Foundation;
 using namespace Windows::Storage::Streams;
+using namespace Windows::System::Display;
 using namespace Windows::UI::Xaml::Media::Imaging;
 
 namespace winrt::viewer::implementation
@@ -58,6 +59,9 @@ namespace winrt::viewer::implementation
 		BluetoothLEDevice client;
 		GattCharacteristic thermocamChr;
 		SoftwareBitmapSource thermocamBitmap;
+
+		DisplayRequest displayRequest;
+		std::atomic<uint32_t> requestCount;
 
 		event_token tokenForConnectionStatusChanged;
 		event_token tokenForGattServicesChanged;

@@ -167,6 +167,11 @@ namespace winrt::viewer::implementation
 
 	void MainPage::DisconnectBLE()
 	{
+		uint32_t expected = 1;
+		if (requestCount.compare_exchange_strong(expected, 0)) {
+			displayRequest.RequestRelease();
+		}
+
 		if (thermocamChr) {
 			if (tokenForCharacteristicValueChanged) {
 				thermocamChr.ValueChanged(tokenForCharacteristicValueChanged);
@@ -262,6 +267,11 @@ namespace winrt::viewer::implementation
 			// TODO: add addr to blacklist
 			StartAdvWatcherIfNeeded();
 			co_return;
+		}
+
+		uint32_t expected = 0;
+		if (requestCount.compare_exchange_strong(expected, 1)) {
+			displayRequest.RequestActive();
 		}
 
 	}
