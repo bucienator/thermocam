@@ -1,0 +1,470 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C839E7A22295EABD00745768 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C839E7A12295EABD00745768 /* AppDelegate.swift */; };
+		C839E7A42295EABD00745768 /* ThermoCamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C839E7A32295EABD00745768 /* ThermoCamViewController.swift */; };
+		C839E7A72295EABD00745768 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C839E7A52295EABD00745768 /* Main.storyboard */; };
+		C839E7A92295EAC000745768 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C839E7A82295EAC000745768 /* Assets.xcassets */; };
+		C839E7AC2295EAC000745768 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C839E7AA2295EAC000745768 /* LaunchScreen.storyboard */; };
+		C839E7B72295EAC100745768 /* Thermo_Cam_BLETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C839E7B62295EAC100745768 /* Thermo_Cam_BLETests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C839E7B32295EAC100745768 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C839E7962295EABC00745768 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C839E79D2295EABD00745768;
+			remoteInfo = "Thermo Cam BLE";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		C839E79E2295EABD00745768 /* Thermo Cam BLE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Thermo Cam BLE.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C839E7A12295EABD00745768 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		C839E7A32295EABD00745768 /* ThermoCamViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThermoCamViewController.swift; sourceTree = "<group>"; };
+		C839E7A62295EABD00745768 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		C839E7A82295EAC000745768 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C839E7AB2295EAC000745768 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		C839E7AD2295EAC000745768 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C839E7B22295EAC100745768 /* Thermo Cam BLETests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Thermo Cam BLETests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C839E7B62295EAC100745768 /* Thermo_Cam_BLETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Thermo_Cam_BLETests.swift; sourceTree = "<group>"; };
+		C839E7B82295EAC100745768 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C839E79B2295EABD00745768 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C839E7AF2295EAC100745768 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C839E7952295EABC00745768 = {
+			isa = PBXGroup;
+			children = (
+				C839E7A02295EABD00745768 /* Thermo Cam BLE */,
+				C839E7B52295EAC100745768 /* Thermo Cam BLETests */,
+				C839E79F2295EABD00745768 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C839E79F2295EABD00745768 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C839E79E2295EABD00745768 /* Thermo Cam BLE.app */,
+				C839E7B22295EAC100745768 /* Thermo Cam BLETests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C839E7A02295EABD00745768 /* Thermo Cam BLE */ = {
+			isa = PBXGroup;
+			children = (
+				C839E7A12295EABD00745768 /* AppDelegate.swift */,
+				C839E7A32295EABD00745768 /* ThermoCamViewController.swift */,
+				C839E7A52295EABD00745768 /* Main.storyboard */,
+				C839E7A82295EAC000745768 /* Assets.xcassets */,
+				C839E7AA2295EAC000745768 /* LaunchScreen.storyboard */,
+				C839E7AD2295EAC000745768 /* Info.plist */,
+			);
+			path = "Thermo Cam BLE";
+			sourceTree = "<group>";
+		};
+		C839E7B52295EAC100745768 /* Thermo Cam BLETests */ = {
+			isa = PBXGroup;
+			children = (
+				C839E7B62295EAC100745768 /* Thermo_Cam_BLETests.swift */,
+				C839E7B82295EAC100745768 /* Info.plist */,
+			);
+			path = "Thermo Cam BLETests";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C839E79D2295EABD00745768 /* Thermo Cam BLE */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C839E7BB2295EAC100745768 /* Build configuration list for PBXNativeTarget "Thermo Cam BLE" */;
+			buildPhases = (
+				C839E79A2295EABD00745768 /* Sources */,
+				C839E79B2295EABD00745768 /* Frameworks */,
+				C839E79C2295EABD00745768 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Thermo Cam BLE";
+			productName = "Thermo Cam BLE";
+			productReference = C839E79E2295EABD00745768 /* Thermo Cam BLE.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C839E7B12295EAC100745768 /* Thermo Cam BLETests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C839E7BE2295EAC100745768 /* Build configuration list for PBXNativeTarget "Thermo Cam BLETests" */;
+			buildPhases = (
+				C839E7AE2295EAC100745768 /* Sources */,
+				C839E7AF2295EAC100745768 /* Frameworks */,
+				C839E7B02295EAC100745768 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C839E7B42295EAC100745768 /* PBXTargetDependency */,
+			);
+			name = "Thermo Cam BLETests";
+			productName = "Thermo Cam BLETests";
+			productReference = C839E7B22295EAC100745768 /* Thermo Cam BLETests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C839E7962295EABC00745768 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1020;
+				LastUpgradeCheck = 1020;
+				ORGANIZATIONNAME = Metacortex;
+				TargetAttributes = {
+					C839E79D2295EABD00745768 = {
+						CreatedOnToolsVersion = 10.2.1;
+					};
+					C839E7B12295EAC100745768 = {
+						CreatedOnToolsVersion = 10.2.1;
+						TestTargetID = C839E79D2295EABD00745768;
+					};
+				};
+			};
+			buildConfigurationList = C839E7992295EABC00745768 /* Build configuration list for PBXProject "Thermo Cam BLE" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = C839E7952295EABC00745768;
+			productRefGroup = C839E79F2295EABD00745768 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C839E79D2295EABD00745768 /* Thermo Cam BLE */,
+				C839E7B12295EAC100745768 /* Thermo Cam BLETests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C839E79C2295EABD00745768 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C839E7AC2295EAC000745768 /* LaunchScreen.storyboard in Resources */,
+				C839E7A92295EAC000745768 /* Assets.xcassets in Resources */,
+				C839E7A72295EABD00745768 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C839E7B02295EAC100745768 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C839E79A2295EABD00745768 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C839E7A42295EABD00745768 /* ThermoCamViewController.swift in Sources */,
+				C839E7A22295EABD00745768 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C839E7AE2295EAC100745768 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C839E7B72295EAC100745768 /* Thermo_Cam_BLETests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C839E7B42295EAC100745768 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C839E79D2295EABD00745768 /* Thermo Cam BLE */;
+			targetProxy = C839E7B32295EAC100745768 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		C839E7A52295EABD00745768 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C839E7A62295EABD00745768 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		C839E7AA2295EAC000745768 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C839E7AB2295EAC000745768 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C839E7B92295EAC100745768 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		C839E7BA2295EAC100745768 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C839E7BC2295EAC100745768 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 644PM75S2A;
+				INFOPLIST_FILE = "Thermo Cam BLE/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "hu.metacortex.Thermo-Cam-BLE";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C839E7BD2295EAC100745768 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 644PM75S2A;
+				INFOPLIST_FILE = "Thermo Cam BLE/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "hu.metacortex.Thermo-Cam-BLE";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		C839E7BF2295EAC100745768 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 644PM75S2A;
+				INFOPLIST_FILE = "Thermo Cam BLETests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "hu.metacortex.Thermo-Cam-BLETests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Thermo Cam BLE.app/Thermo Cam BLE";
+			};
+			name = Debug;
+		};
+		C839E7C02295EAC100745768 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 644PM75S2A;
+				INFOPLIST_FILE = "Thermo Cam BLETests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "hu.metacortex.Thermo-Cam-BLETests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Thermo Cam BLE.app/Thermo Cam BLE";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C839E7992295EABC00745768 /* Build configuration list for PBXProject "Thermo Cam BLE" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C839E7B92295EAC100745768 /* Debug */,
+				C839E7BA2295EAC100745768 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C839E7BB2295EAC100745768 /* Build configuration list for PBXNativeTarget "Thermo Cam BLE" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C839E7BC2295EAC100745768 /* Debug */,
+				C839E7BD2295EAC100745768 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C839E7BE2295EAC100745768 /* Build configuration list for PBXNativeTarget "Thermo Cam BLETests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C839E7BF2295EAC100745768 /* Debug */,
+				C839E7C02295EAC100745768 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C839E7962295EABC00745768 /* Project object */;
+}

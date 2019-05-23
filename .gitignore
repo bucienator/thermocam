@@ -21,3 +21,16 @@ tags
 /viewer/x64
 /viewer/*.pfx
 /viewer/*.user
+
+
+# Xcode
+## Build generated
+build/
+DerivedData/ 
+
+## Various settings
+*.pbxuser
+xcuserdata/
+
+/Pods
+
