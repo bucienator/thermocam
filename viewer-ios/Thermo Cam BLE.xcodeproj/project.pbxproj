@@ -16,6 +16,9 @@
 		C839E7B72295EAC100745768 /* Thermo_Cam_BLETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C839E7B62295EAC100745768 /* Thermo_Cam_BLETests.swift */; };
 		C88499C622AC4E4D009DC7DA /* BLEThermal.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88499C522AC4E4D009DC7DA /* BLEThermal.swift */; };
 		C88499C822AEF76D009DC7DA /* ThermalImageConverterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88499C722AEF76D009DC7DA /* ThermalImageConverterService.swift */; };
+		C8ECE53022CD4DF400ADED36 /* ImageScaler.mm in Sources */ = {isa = PBXBuildFile; fileRef = C8ECE52F22CD4DF400ADED36 /* ImageScaler.mm */; };
+		C8ECE53222E385EB00ADED36 /* scaler.metal in Sources */ = {isa = PBXBuildFile; fileRef = C8ECE53122E385EB00ADED36 /* scaler.metal */; };
+		C8ECE53422E38B9A00ADED36 /* MetalScaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8ECE53322E38B9A00ADED36 /* MetalScaler.swift */; };
 		F63634C806560EC41136C632 /* Pods_Thermo_Cam_BLE.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49DB194D3157227628135507 /* Pods_Thermo_Cam_BLE.framework */; };
 /* End PBXBuildFile section */
 
@@ -47,6 +50,11 @@
 		C839E7B82295EAC100745768 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C88499C522AC4E4D009DC7DA /* BLEThermal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEThermal.swift; sourceTree = "<group>"; };
 		C88499C722AEF76D009DC7DA /* ThermalImageConverterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThermalImageConverterService.swift; sourceTree = "<group>"; };
+		C8ECE52B22CD448F00ADED36 /* Thermo Cam BLE-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Thermo Cam BLE-Bridging-Header.h"; sourceTree = "<group>"; };
+		C8ECE52E22CD4DF400ADED36 /* ImageScaler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageScaler.h; sourceTree = "<group>"; };
+		C8ECE52F22CD4DF400ADED36 /* ImageScaler.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ImageScaler.mm; sourceTree = "<group>"; };
+		C8ECE53122E385EB00ADED36 /* scaler.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = scaler.metal; sourceTree = "<group>"; };
+		C8ECE53322E38B9A00ADED36 /* MetalScaler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalScaler.swift; sourceTree = "<group>"; };
 		FA8F65E4B6988767EB8820E2 /* Pods-Thermo Cam BLE.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Thermo Cam BLE.release.xcconfig"; path = "Target Support Files/Pods-Thermo Cam BLE/Pods-Thermo Cam BLE.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -87,6 +95,7 @@
 				C839E79F2295EABD00745768 /* Products */,
 				CF8BFE110D162CF86CF12A2F /* Pods */,
 				256059B9869E7C37629D9873 /* Frameworks */,
+				C8ECE52B22CD448F00ADED36 /* Thermo Cam BLE-Bridging-Header.h */,
 			);
 			sourceTree = "<group>";
 		};
@@ -110,6 +119,10 @@
 				C839E7AD2295EAC000745768 /* Info.plist */,
 				C88499C522AC4E4D009DC7DA /* BLEThermal.swift */,
 				C88499C722AEF76D009DC7DA /* ThermalImageConverterService.swift */,
+				C8ECE52E22CD4DF400ADED36 /* ImageScaler.h */,
+				C8ECE52F22CD4DF400ADED36 /* ImageScaler.mm */,
+				C8ECE53122E385EB00ADED36 /* scaler.metal */,
+				C8ECE53322E38B9A00ADED36 /* MetalScaler.swift */,
 			);
 			path = "Thermo Cam BLE";
 			sourceTree = "<group>";
@@ -186,6 +199,7 @@
 				TargetAttributes = {
 					C839E79D2295EABD00745768 = {
 						CreatedOnToolsVersion = 10.2.1;
+						LastSwiftMigration = 1020;
 					};
 					C839E7B12295EAC100745768 = {
 						CreatedOnToolsVersion = 10.2.1;
@@ -284,10 +298,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C8ECE53422E38B9A00ADED36 /* MetalScaler.swift in Sources */,
+				C8ECE53022CD4DF400ADED36 /* ImageScaler.mm in Sources */,
 				C839E7A42295EABD00745768 /* ThermoCamViewController.swift in Sources */,
 				C839E7A22295EABD00745768 /* AppDelegate.swift in Sources */,
 				C88499C822AEF76D009DC7DA /* ThermalImageConverterService.swift in Sources */,
 				C88499C622AC4E4D009DC7DA /* BLEThermal.swift in Sources */,
+				C8ECE53222E385EB00ADED36 /* scaler.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -450,6 +467,7 @@
 			baseConfigurationReference = 09C52A006ADAC5CFBE7C8274 /* Pods-Thermo Cam BLE.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 644PM75S2A;
 				INFOPLIST_FILE = "Thermo Cam BLE/Info.plist";
@@ -459,6 +477,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "hu.metacortex.Thermo-Cam-BLE";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Thermo Cam BLE-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -469,6 +489,7 @@
 			baseConfigurationReference = FA8F65E4B6988767EB8820E2 /* Pods-Thermo Cam BLE.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 644PM75S2A;
 				INFOPLIST_FILE = "Thermo Cam BLE/Info.plist";
@@ -478,6 +499,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "hu.metacortex.Thermo-Cam-BLE";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Thermo Cam BLE-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

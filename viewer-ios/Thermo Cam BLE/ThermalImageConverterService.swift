@@ -8,16 +8,16 @@
 
 import Foundation
 import UIKit
+import Metal
 
-
-public struct PixelData {
+private struct PixelData {
     var a:UInt8 = 255
     var r:UInt8
     var g:UInt8
     var b:UInt8
 }
 
-func CalculateColorGradient(_ colorMap: inout [PixelData], startIdx: Int, endIdx: Int, startColor: PixelData, endColor: PixelData)
+private func CalculateColorGradient(_ colorMap: inout [PixelData], startIdx: Int, endIdx: Int, startColor: PixelData, endColor: PixelData)
 {
     let stepCnt = endIdx-startIdx
     let diffA = (Float(endColor.a) - Float(startColor.a))/Float(stepCnt)
@@ -33,13 +33,11 @@ func CalculateColorGradient(_ colorMap: inout [PixelData], startIdx: Int, endIdx
     
 }
 
-class ColorScale {
-
-    static let shared = ColorScale()
+private class ColorScale {
     
-    var colorScale : [PixelData]
+    private var colorScale : [PixelData]
     
-    private init() {
+    init() {
         colorScale = [PixelData](repeating: PixelData(a:0, r:0, g:0, b:0), count: 1000)
         
         let black = PixelData(a: 255, r: 0, g: 0, b: 0)
@@ -66,8 +64,7 @@ class ColorScale {
     }
 }
 
-
-public func imageFromARGB32Bitmap(pixels: [PixelData], width: Int, height: Int) -> CGImage {
+private func imageFromARGB32Bitmap(pixels: [PixelData], width: Int, height: Int) -> CGImage {
     let bitsPerComponent: Int = 8
     let bitsPerPixel: Int = 32
     
@@ -94,19 +91,88 @@ public func imageFromARGB32Bitmap(pixels: [PixelData], width: Int, height: Int) 
     return cgim!
 }
 
+protocol ThermalImageConverterServiceDelegate : class {
+    func conversionComplete(_ image: CGImage)
+}
 
-func ConvertThermalImageToCGImage(_ heatMap: [Float], scaleTo targetSize: CGSize) -> CGImage
-{
+class ThermalImageConverterService : MetalScalerDelegate {
 
-    var imageData = [PixelData](repeating: PixelData(a:0, r:0, g:0, b:0), count: 64)
+    static let shared = ThermalImageConverterService()
+
+    private let scaler : MetalScaler?
     
-    //let minTemp = heatMap.min()!
-    //let maxTemp = heatMap.max()!
-    
-    for i in 0..<64 {
-        let temp = heatMap[63-i]
-        imageData[i] = ColorScale.shared.GetColorForTemperature(temp)
+    private let colorScale = ColorScale()
+    private var _targetSize = CGSize(width: 414, height: 414)
+    var targetSize : CGSize {
+        set {
+            _targetSize = newValue
+            scaler?.targetSize = newValue
+        }
+        get {
+            return _targetSize
+        }
     }
     
-    return imageFromARGB32Bitmap(pixels: imageData, width: 8, height: 8)
+    init() {
+        let device = MTLCreateSystemDefaultDevice()
+        if device != nil {
+            // Actually OpenCV's resize seems to be much faster than my Metal GPU scaler
+            // bu probably I could tweak it to be more efficient.
+            // Now it is 350 FPS to 80 FPS in release on iPhone 6s plus.
+            scaler = MetalScaler(device!)
+            scaler?.delegate = self
+        } else {
+            scaler = nil
+        }
+    }
+    
+    func startImageConversion(_ heatMap: [Float], completionHandler delegate: ThermalImageConverterServiceDelegate?)
+    {
+        
+        if scaler != nil {
+            // Metal solution
+            scaler?.scale(heatMap, completionHandler: delegate)
+        } else {
+            DispatchQueue.global(qos: .userInitiated).async {
+                [weak self] in
+                self?.scaleWithOpenCV(heatMap, completionHandler: delegate)
+            }
+        }
+    }
+    
+    private func scaleWithOpenCV(_ heatMap: [Float], completionHandler delegate: ThermalImageConverterServiceDelegate?) {
+        
+        let targetPixelCount = Int(_targetSize.width * _targetSize.height)
+        
+        var scaled = [Float](repeating: 0, count: targetPixelCount)
+        
+        // OpenCV solution
+        heatMap.withUnsafeBufferPointer {
+            (inputBuffer: UnsafeBufferPointer)->Void in
+            scaled.withUnsafeMutableBufferPointer {
+                ( buf: inout UnsafeMutableBufferPointer)->Void in
+                ImageScaler.scaleImage(from: CGSize(width: 8, height: 8), andFromData: inputBuffer.baseAddress!, to: _targetSize, andToData: buf.baseAddress!)
+            }
+        }
+        
+        scalingComplete(scaled, to: _targetSize, completionHandler: delegate)
+    }
+    
+    func scalingComplete(_ scaled: [Float], to size: CGSize, completionHandler delegate: ThermalImageConverterServiceDelegate?) {
+        let targetPixelCount = Int(size.width) * Int(size.height)
+        var imageData = [PixelData](repeating: PixelData(a:0, r:0, g:0, b:0), count: targetPixelCount)
+        
+        //let minTemp = heatMap.min()!
+        //let maxTemp = heatMap.max()!
+        
+        for i in 0..<targetPixelCount {
+            let temp = scaled[targetPixelCount-1-i]
+            imageData[i] = colorScale.GetColorForTemperature((temp - 20.0) * 4.0)
+        }
+        
+        let image = imageFromARGB32Bitmap(pixels: imageData, width: Int(size.width), height: Int(size.height))
+        delegate?.conversionComplete(image)
+    }
 }
+
+

@@ -61,10 +61,11 @@ class BLEHandler : NSObject {
         self.delegate?.didReceiveNewImage(demoTemperatures)
         
         // reschedule a next demo image
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.1) {
+        // resceduling afer frame is processed...
+        /*DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 1) {
             [weak self] in
             self?.demoImage()
-        }
+        }*/
     }
     
 }
@@ -91,8 +92,13 @@ extension BLEHandler : CBCentralManagerDelegate {
             print("central.state is .poweredOff")
         case .poweredOn:
             print("central.state is .poweredOn")
-            central.scanForPeripherals(withServices: [thermoCamServiceUUID])
-            
+//            central.scanForPeripherals(withServices: [thermoCamServiceUUID])
+            // dispatch a demo event
+            DispatchQueue.global(qos: .background).asyncAfter(deadline: .now()+1) {
+                [weak self] in
+                self?.demoImage()
+            }
+
         @unknown default:
             print("central.state is something else")
             
@@ -169,7 +175,7 @@ extension BLEHandler : CBPeripheralDelegate {
                 }
             }
             
-            print("Received \(intData.count)")
+            //print("Received \(intData.count)")
             
             self.delegate?.didReceiveNewImage(temperatures)
             
